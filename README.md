@@ -1,6 +1,42 @@
 # 分布式多 Agent 协同旅游规划系统
 
+[![CI](https://github.com/YinFengWindy/Multi-Agent-Tourism-Planning-System/actions/workflows/ci.yml/badge.svg)](https://github.com/YinFengWindy/Multi-Agent-Tourism-Planning-System/actions/workflows/ci.yml)
+[![License](https://img.shields.io/github/license/YinFengWindy/Multi-Agent-Tourism-Planning-System)](./LICENSE)
+[![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)](./backend)
+[![Vue](https://img.shields.io/badge/Vue-3-42b883?logo=vue.js&logoColor=white)](./frontend)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688?logo=fastapi&logoColor=white)](./backend)
+[![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)](./docker-compose.yml)
+
 这是一个面向生产场景的旅游决策与行程编排系统设计稿，目标是在 `Python + FastAPI + LangGraph + MCP + Redis + MongoDB + Docker + Vue 3` 技术栈下，构建可扩展、可观测、可重规划的分布式多 Agent 协作平台。
+
+## 0. 项目亮点
+
+- 分布式 `Parent Agent + 6` 个领域子 Agent 协同编排
+- 基于 `LangGraph` 的 `Plan-Execute-Replan` 可重规划闭环
+- 统一 `MCP Gateway` 接入地图、天气、交通、酒店等工具接口
+- 支持 `Redis` 缓存、`MongoDB` 快照、SSE 进度流和 Docker 化部署
+- 前端升级为专业版工作台 UI，支持日间 / 夜间模式和自定义主题色
+
+## 0.1 界面预览
+
+> 以下为当前专业版 UI 的预览示意图，分别对应夜间模式和日间模式。
+
+### 夜间模式
+
+![夜间模式预览](docs/assets/ui-preview-dark.svg)
+
+### 日间模式
+
+![日间模式预览](docs/assets/ui-preview-light.svg)
+
+## 0.2 持续集成
+
+仓库已包含 GitHub Actions 工作流：
+
+- `Backend Test`：安装 `backend/requirements.txt` 并执行 `pytest -q`
+- `Frontend Build`：安装前端依赖并执行 `npm run build`
+
+工作流文件：`.github/workflows/ci.yml`
 
 ## 1. 设计目标
 

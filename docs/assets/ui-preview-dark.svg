@@ -1,0 +1,99 @@
+<svg width="1440" height="900" viewBox="0 0 1440 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgDark" x1="160" y1="20" x2="1220" y2="840" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#142947"/>
+      <stop offset="0.56" stop-color="#09111F"/>
+      <stop offset="1" stop-color="#060B15"/>
+    </linearGradient>
+    <linearGradient id="accentDark" x1="0" y1="0" x2="240" y2="160" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#5FA8FF"/>
+      <stop offset="1" stop-color="#6D5CFF"/>
+    </linearGradient>
+    <filter id="shadow" x="0" y="0" width="1440" height="900" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="18" stdDeviation="22" flood-color="#020712" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+
+  <rect width="1440" height="900" rx="0" fill="url(#bgDark)"/>
+  <circle cx="1260" cy="120" r="220" fill="#3E63FF" fill-opacity="0.08"/>
+  <circle cx="180" cy="120" r="180" fill="#55D1FF" fill-opacity="0.12"/>
+
+  <g filter="url(#shadow)">
+    <rect x="48" y="40" width="1344" height="820" rx="28" fill="#0C1627" fill-opacity="0.82" stroke="#8CB5FF" stroke-opacity="0.16"/>
+  </g>
+
+  <text x="84" y="88" fill="#6CC8FF" font-family="Segoe UI, Arial" font-size="14" letter-spacing="3">PROFESSIONAL PLANNING WORKSPACE</text>
+  <text x="84" y="134" fill="#F5F9FF" font-family="Segoe UI, Arial" font-size="40" font-weight="700">Multi-Agent Tourism Planning System</text>
+  <text x="84" y="174" fill="#A7BBD5" font-family="Segoe UI, Arial" font-size="18">夜间模式 · 专业版工作台 · 多 Agent 协同执行视图</text>
+
+  <rect x="84" y="210" width="120" height="34" rx="17" fill="#102643" stroke="#74C7FF" stroke-opacity="0.25"/>
+  <text x="110" y="232" fill="#8FD9FF" font-family="Segoe UI, Arial" font-size="13">Parent Agent</text>
+  <rect x="214" y="210" width="120" height="34" rx="17" fill="#102643" stroke="#74C7FF" stroke-opacity="0.25"/>
+  <text x="250" y="232" fill="#8FD9FF" font-family="Segoe UI, Arial" font-size="13">6 子 Agent</text>
+  <rect x="344" y="210" width="166" height="34" rx="17" fill="#102643" stroke="#74C7FF" stroke-opacity="0.25"/>
+  <text x="370" y="232" fill="#8FD9FF" font-family="Segoe UI, Arial" font-size="13">Plan-Execute-Replan</text>
+
+  <rect x="84" y="276" width="780" height="252" rx="22" fill="#0F1D34" stroke="#8CB5FF" stroke-opacity="0.14"/>
+  <text x="112" y="314" fill="#6CC8FF" font-family="Segoe UI, Arial" font-size="13" letter-spacing="2">PLANNING INPUT</text>
+  <text x="112" y="346" fill="#F5F9FF" font-family="Segoe UI, Arial" font-size="26" font-weight="700">旅行约束配置器</text>
+
+  <rect x="112" y="374" width="220" height="64" rx="16" fill="#08111F" stroke="#8CB5FF" stroke-opacity="0.14"/>
+  <text x="130" y="399" fill="#8DA7C5" font-family="Segoe UI, Arial" font-size="13">出发城市</text>
+  <text x="130" y="425" fill="#F5F9FF" font-family="Segoe UI, Arial" font-size="18">上海</text>
+  <rect x="350" y="374" width="220" height="64" rx="16" fill="#08111F" stroke="#8CB5FF" stroke-opacity="0.14"/>
+  <text x="368" y="399" fill="#8DA7C5" font-family="Segoe UI, Arial" font-size="13">目的地</text>
+  <text x="368" y="425" fill="#F5F9FF" font-family="Segoe UI, Arial" font-size="18">杭州 · 乌镇</text>
+  <rect x="588" y="374" width="248" height="64" rx="16" fill="#08111F" stroke="#8CB5FF" stroke-opacity="0.14"/>
+  <text x="606" y="399" fill="#8DA7C5" font-family="Segoe UI, Arial" font-size="13">预算与偏好</text>
+  <text x="606" y="425" fill="#F5F9FF" font-family="Segoe UI, Arial" font-size="18">¥4200 · 美食 · 轻松节奏</text>
+
+  <rect x="112" y="454" width="724" height="46" rx="14" fill="url(#accentDark)"/>
+  <text x="388" y="483" fill="#F7FBFF" font-family="Segoe UI, Arial" font-size="16" font-weight="700">发起规划</text>
+
+  <rect x="886" y="276" width="466" height="252" rx="22" fill="#0F1D34" stroke="#8CB5FF" stroke-opacity="0.14"/>
+  <text x="914" y="314" fill="#6CC8FF" font-family="Segoe UI, Arial" font-size="13" letter-spacing="2">THEME WORKSPACE</text>
+  <text x="914" y="346" fill="#F5F9FF" font-family="Segoe UI, Arial" font-size="26" font-weight="700">主题工作台</text>
+  <rect x="914" y="374" width="190" height="42" rx="14" fill="#E8F1FF" fill-opacity="0.07" stroke="#8CB5FF" stroke-opacity="0.14"/>
+  <text x="977" y="401" fill="#EAF3FF" font-family="Segoe UI, Arial" font-size="15">日间模式</text>
+  <rect x="1118" y="374" width="190" height="42" rx="14" fill="#4F8CFF" fill-opacity="0.18" stroke="#6FC8FF" stroke-opacity="0.22"/>
+  <text x="1181" y="401" fill="#9DD9FF" font-family="Segoe UI, Arial" font-size="15">夜间模式</text>
+  <circle cx="940" cy="458" r="18" fill="#4F8CFF"/>
+  <circle cx="986" cy="458" r="18" fill="#18B87A"/>
+  <circle cx="1032" cy="458" r="18" fill="#FF8C42"/>
+  <circle cx="1078" cy="458" r="18" fill="#7C5CFF"/>
+  <circle cx="1124" cy="458" r="18" fill="#FF5F8F"/>
+  <rect x="1168" y="438" width="140" height="40" rx="12" fill="#08111F" stroke="#8CB5FF" stroke-opacity="0.14"/>
+  <text x="1198" y="464" fill="#EAF3FF" font-family="Segoe UI, Arial" font-size="16">#4F8CFF</text>
+
+  <rect x="84" y="554" width="606" height="266" rx="22" fill="#0F1D34" stroke="#8CB5FF" stroke-opacity="0.14"/>
+  <text x="112" y="592" fill="#6CC8FF" font-family="Segoe UI, Arial" font-size="13" letter-spacing="2">EXECUTION TRACE</text>
+  <text x="112" y="624" fill="#F5F9FF" font-family="Segoe UI, Arial" font-size="26" font-weight="700">多 Agent 协同过程</text>
+  <rect x="112" y="650" width="550" height="54" rx="16" fill="#0B1629" stroke="#8CB5FF" stroke-opacity="0.14"/>
+  <circle cx="136" cy="677" r="10" fill="#4F8CFF"/>
+  <text x="158" y="672" fill="#8FD9FF" font-family="Segoe UI, Arial" font-size="12">启动</text>
+  <text x="158" y="690" fill="#F5F9FF" font-family="Segoe UI, Arial" font-size="15">Parent Agent 已开始解析约束并构建协同任务图。</text>
+  <rect x="112" y="716" width="550" height="54" rx="16" fill="#0B1629" stroke="#8CB5FF" stroke-opacity="0.14"/>
+  <circle cx="136" cy="743" r="10" fill="#4F8CFF"/>
+  <text x="158" y="738" fill="#8FD9FF" font-family="Segoe UI, Arial" font-size="12">分发</text>
+  <text x="158" y="756" fill="#F5F9FF" font-family="Segoe UI, Arial" font-size="15">交通、酒店、路线、景点、预算、风险任务已并行派发。</text>
+
+  <rect x="714" y="554" width="638" height="266" rx="22" fill="#0F1D34" stroke="#8CB5FF" stroke-opacity="0.14"/>
+  <text x="742" y="592" fill="#6CC8FF" font-family="Segoe UI, Arial" font-size="13" letter-spacing="2">FINAL DELIVERABLE</text>
+  <text x="742" y="624" fill="#F5F9FF" font-family="Segoe UI, Arial" font-size="26" font-weight="700">规划成品总览</text>
+  <rect x="742" y="648" width="138" height="72" rx="18" fill="#0B1629" stroke="#8CB5FF" stroke-opacity="0.14"/>
+  <text x="762" y="675" fill="#8DA7C5" font-family="Segoe UI, Arial" font-size="12">行程天数</text>
+  <text x="762" y="704" fill="#F5F9FF" font-family="Segoe UI, Arial" font-size="24" font-weight="700">3 天</text>
+  <rect x="894" y="648" width="150" height="72" rx="18" fill="#0B1629" stroke="#8CB5FF" stroke-opacity="0.14"/>
+  <text x="914" y="675" fill="#8DA7C5" font-family="Segoe UI, Arial" font-size="12">预算总额</text>
+  <text x="914" y="704" fill="#F5F9FF" font-family="Segoe UI, Arial" font-size="24" font-weight="700">¥3980</text>
+  <rect x="1058" y="648" width="138" height="72" rx="18" fill="#0B1629" stroke="#8CB5FF" stroke-opacity="0.14"/>
+  <text x="1078" y="675" fill="#8DA7C5" font-family="Segoe UI, Arial" font-size="12">风险提醒</text>
+  <text x="1078" y="704" fill="#F5F9FF" font-family="Segoe UI, Arial" font-size="24" font-weight="700">1 条</text>
+  <rect x="1210" y="648" width="114" height="72" rx="18" fill="#0B1629" stroke="#8CB5FF" stroke-opacity="0.14"/>
+  <text x="1228" y="675" fill="#8DA7C5" font-family="Segoe UI, Arial" font-size="12">预案</text>
+  <text x="1228" y="704" fill="#F5F9FF" font-family="Segoe UI, Arial" font-size="24" font-weight="700">2 条</text>
+
+  <rect x="742" y="740" width="582" height="52" rx="16" fill="#101D33" stroke="#8CB5FF" stroke-opacity="0.14"/>
+  <text x="766" y="772" fill="#F5F9FF" font-family="Segoe UI, Arial" font-size="16">杭州 · 人文与城市漫步 · 09:30 西湖探索 · 14:00 灵隐寺行程</text>
+</svg>
+
