@@ -28,6 +28,17 @@ const workflowCapsules = [
   'Redis / MongoDB',
 ]
 
+const workspaceStages = computed(() => {
+  const eventTypes = new Set(events.value.map((event) => event.type))
+  return [
+    { label: '需求解析', active: eventTypes.has('plan_started'), done: eventTypes.has('plan_started') },
+    { label: '任务分发', active: eventTypes.has('task_dispatched'), done: eventTypes.has('task_dispatched') },
+    { label: '领域执行', active: eventTypes.has('agent_progress'), done: eventTypes.has('agent_progress') },
+    { label: '自动重规划', active: eventTypes.has('replan_triggered'), done: eventTypes.has('replan_triggered') },
+    { label: '最终成品', active: eventTypes.has('plan_completed'), done: eventTypes.has('plan_completed') },
+  ]
+})
+
 const currentStatus = computed(() => {
   if (loading.value) {
     return '规划运行中'
@@ -66,6 +77,8 @@ const planHighlights = computed(() => {
     result.value.fallback_plans.length ? `可用备选预案 ${result.value.fallback_plans.length} 条` : '无备选预案',
   ]
 })
+
+const themeSummary = computed(() => `${themeMode.value === 'dark' ? '夜间模式' : '日间模式'} · ${accentColor.value.toUpperCase()}`)
 
 function resetStream() {
   events.value = []
@@ -168,6 +181,22 @@ onMounted(() => {
 
 <template>
   <main class="page-shell">
+    <section class="workspace-toolbar glass-panel">
+      <div class="toolbar-brand">
+        <div class="brand-mark">M</div>
+        <div>
+          <strong>AI Tourism Workspace</strong>
+          <small>Professional Multi-Agent Planning Console</small>
+        </div>
+      </div>
+
+      <div class="toolbar-meta">
+        <span class="toolbar-chip">{{ themeSummary }}</span>
+        <span class="toolbar-chip">{{ currentStatus }}</span>
+        <span class="toolbar-chip">目标目录：Multi-Agent Tourism Planning System</span>
+      </div>
+    </section>
+
     <section class="hero-shell glass-panel">
       <div class="hero-copy">
         <span class="eyebrow">Professional Planning Workspace</span>
@@ -186,6 +215,17 @@ onMounted(() => {
             <span class="metric-label">{{ metric.label }}</span>
             <strong class="metric-value">{{ metric.value }}</strong>
             <small class="metric-hint">{{ metric.hint }}</small>
+          </article>
+        </div>
+
+        <div class="stage-rail surface-card">
+          <article
+            v-for="stage in workspaceStages"
+            :key="stage.label"
+            :class="['stage-chip', { active: stage.active, done: stage.done }]"
+          >
+            <span class="stage-dot"></span>
+            <span>{{ stage.label }}</span>
           </article>
         </div>
       </div>
@@ -239,6 +279,61 @@ onMounted(() => {
   max-width: 1440px;
   margin: 0 auto;
   padding: 28px 20px 56px;
+}
+
+.workspace-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 18px;
+  padding-block: 18px;
+}
+
+.toolbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.brand-mark {
+  width: 44px;
+  height: 44px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+  color: var(--accent-contrast);
+  font-size: 20px;
+  font-weight: 800;
+  box-shadow: 0 12px 26px rgba(var(--accent-rgb), 0.24);
+}
+
+.toolbar-brand strong {
+  display: block;
+  font-size: 15px;
+}
+
+.toolbar-brand small {
+  color: var(--text-muted);
+}
+
+.toolbar-meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.toolbar-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border-color);
+  background: rgba(var(--accent-rgb), 0.08);
+  color: var(--text-secondary);
+  font-size: 13px;
 }
 
 .hero-shell {
@@ -317,6 +412,42 @@ onMounted(() => {
 .metric-hint {
   color: var(--text-muted);
   line-height: 1.5;
+}
+
+.stage-rail {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.stage-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 46px;
+  border-radius: 16px;
+  border: 1px solid var(--border-color);
+  background: var(--surface-strong);
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.stage-chip.active {
+  color: var(--accent-strong);
+  background: rgba(var(--accent-rgb), 0.12);
+  border-color: rgba(var(--accent-rgb), 0.25);
+}
+
+.stage-chip.done {
+  box-shadow: inset 0 0 0 1px rgba(var(--accent-rgb), 0.08);
+}
+
+.stage-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: currentColor;
 }
 
 .hero-side {
@@ -413,12 +544,26 @@ onMounted(() => {
   .metric-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .stage-rail {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 1024px) {
+  .workspace-toolbar,
   .hero-shell,
   .workspace-grid {
     grid-template-columns: 1fr;
+  }
+
+  .workspace-toolbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .toolbar-meta {
+    justify-content: flex-start;
   }
 }
 
@@ -428,6 +573,10 @@ onMounted(() => {
   }
 
   .metric-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stage-rail {
     grid-template-columns: 1fr;
   }
 

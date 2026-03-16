@@ -16,6 +16,9 @@ const emit = defineEmits<{
 }>()
 
 const accentPreview = computed(() => props.accent.toUpperCase())
+const selectedPreset = computed(() =>
+  props.presets.find((preset) => preset.accent.toLowerCase() === props.accent.toLowerCase())?.id,
+)
 </script>
 
 <template>
@@ -53,7 +56,7 @@ const accentPreview = computed(() => props.accent.toUpperCase())
         <button
           v-for="preset in presets"
           :key="preset.id"
-          class="preset"
+          :class="['preset', { active: selectedPreset === preset.id }]"
           @click="emit('update:accent', preset.accent)"
         >
           <span class="swatch" :style="{ background: preset.accent }"></span>
@@ -83,6 +86,17 @@ const accentPreview = computed(() => props.accent.toUpperCase())
       <div class="preview-chip accent">Accent</div>
       <div class="preview-chip soft">Soft Surface</div>
       <div class="preview-chip line">Border</div>
+    </div>
+
+    <div class="mini-preview surface-box">
+      <div class="mini-preview__top">
+        <span class="mini-pill">{{ mode === 'dark' ? 'Night' : 'Light' }}</span>
+        <span class="mini-pill soft">{{ accentPreview }}</span>
+      </div>
+      <div class="mini-preview__card"></div>
+      <div class="mini-preview__line short"></div>
+      <div class="mini-preview__line"></div>
+      <div class="mini-preview__line faint"></div>
     </div>
   </section>
 </template>
@@ -175,6 +189,12 @@ const accentPreview = computed(() => props.accent.toUpperCase())
   border-color: rgba(var(--accent-rgb), 0.32);
 }
 
+.preset.active {
+  background: rgba(var(--accent-rgb), 0.14);
+  border-color: rgba(var(--accent-rgb), 0.34);
+  color: var(--accent-strong);
+}
+
 .swatch {
   width: 18px;
   height: 18px;
@@ -237,10 +257,63 @@ const accentPreview = computed(() => props.accent.toUpperCase())
   border: 1px solid var(--border-color);
 }
 
+.surface-box {
+  border: 1px solid var(--border-color);
+  background: var(--surface-muted);
+  border-radius: 18px;
+  padding: 16px;
+}
+
+.mini-preview {
+  display: grid;
+  gap: 12px;
+}
+
+.mini-preview__top {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.mini-pill {
+  display: inline-flex;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--accent-contrast);
+  font-size: 12px;
+}
+
+.mini-pill.soft {
+  background: rgba(var(--accent-rgb), 0.12);
+  color: var(--accent-strong);
+}
+
+.mini-preview__card {
+  height: 72px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(var(--accent-rgb), 0.18), var(--surface-strong));
+  border: 1px solid rgba(var(--accent-rgb), 0.2);
+}
+
+.mini-preview__line {
+  height: 10px;
+  border-radius: 999px;
+  background: var(--surface-strong);
+}
+
+.mini-preview__line.short {
+  width: 60%;
+}
+
+.mini-preview__line.faint {
+  width: 75%;
+  opacity: 0.6;
+}
+
 @media (max-width: 768px) {
   .theme-header {
     flex-direction: column;
   }
 }
 </style>
-

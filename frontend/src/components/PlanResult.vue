@@ -14,6 +14,13 @@ const emit = defineEmits<{
 const budgetItems = computed(() => Object.entries(props.result?.budget_breakdown ?? {}))
 const budgetTotal = computed(() => budgetItems.value.reduce((sum, [, value]) => sum + Number(value || 0), 0))
 const insightEntries = computed(() => Object.entries(props.result?.domain_insights ?? {}))
+const budgetBars = computed(() =>
+  budgetItems.value.map(([key, value]) => ({
+    key,
+    value: Number(value),
+    percent: budgetTotal.value ? Math.max(8, (Number(value) / budgetTotal.value) * 100) : 0,
+  })),
+)
 
 function currency(value: number) {
   return new Intl.NumberFormat('zh-CN', {
@@ -113,6 +120,17 @@ function labelBudget(key: string) {
               <strong>{{ currency(Number(value)) }}</strong>
             </li>
           </ul>
+          <div class="budget-bars">
+            <div v-for="bar in budgetBars" :key="bar.key" class="budget-bar">
+              <div class="budget-bar__meta">
+                <span>{{ labelBudget(bar.key) }}</span>
+                <small>{{ Math.round(bar.percent) }}%</small>
+              </div>
+              <div class="budget-bar__track">
+                <div class="budget-bar__fill" :style="{ width: `${bar.percent}%` }"></div>
+              </div>
+            </div>
+          </div>
         </section>
 
         <section class="surface-card side-card">
@@ -377,6 +395,41 @@ function labelBudget(key: string) {
   justify-content: space-between;
   gap: 10px;
   align-items: center;
+}
+
+.budget-bars {
+  display: grid;
+  gap: 10px;
+}
+
+.budget-bar {
+  display: grid;
+  gap: 6px;
+}
+
+.budget-bar__meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.budget-bar__track {
+  width: 100%;
+  height: 9px;
+  border-radius: 999px;
+  background: var(--surface-strong);
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+}
+
+.budget-bar__fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-strong));
+  box-shadow: 0 0 18px rgba(var(--accent-rgb), 0.28);
 }
 
 .divider {

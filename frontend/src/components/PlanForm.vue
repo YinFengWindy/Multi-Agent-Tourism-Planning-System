@@ -45,6 +45,19 @@ const tripDays = computed(() => {
   return `${diff} 天`
 })
 
+const budgetPerDay = computed(() => {
+  const start = new Date(form.startDate)
+  const end = new Date(form.endDate)
+  const diff = Math.max(1, Math.round((end.getTime() - start.getTime()) / 86400000) + 1)
+  return Math.round(Number(form.budget) / diff)
+})
+
+const travelProfile = computed(() => [
+  { label: '出行规模', value: `${form.travelers} 人` },
+  { label: '预算密度', value: `¥${budgetPerDay.value} / 天` },
+  { label: '节奏策略', value: `${form.dailyStartAfter} - ${form.dailyEndBefore}` },
+])
+
 function handleSubmit() {
   emit('submit', {
     origin_city: form.originCity,
@@ -150,6 +163,16 @@ function handleSubmit() {
           <span class="summary-label">本次行程画像</span>
           <strong class="summary-number">{{ tripDays }}</strong>
           <small>系统会自动按日期推导天数，并将城市与预算映射到多 Agent 协同任务图。</small>
+        </section>
+
+        <section class="surface-card metric-stack">
+          <div class="chip-group-title">输入摘要</div>
+          <div class="summary-metrics">
+            <div v-for="item in travelProfile" :key="item.label" class="summary-metric">
+              <span>{{ item.label }}</span>
+              <strong>{{ item.value }}</strong>
+            </div>
+          </div>
         </section>
 
         <section class="surface-card chip-card">
@@ -282,6 +305,36 @@ select {
 .chip-card {
   display: grid;
   gap: 12px;
+}
+
+.metric-stack {
+  display: grid;
+  gap: 14px;
+}
+
+.summary-metrics {
+  display: grid;
+  gap: 10px;
+}
+
+.summary-metric {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: var(--surface-strong);
+  border: 1px solid var(--border-color);
+}
+
+.summary-metric span {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.summary-metric strong {
+  font-size: 14px;
 }
 
 .chip-wrap {

@@ -24,6 +24,17 @@ const metrics = computed(() => {
   ]
 })
 
+const processStages = computed(() => {
+  const set = new Set(props.events.map((event) => event.type))
+  return [
+    { label: '启动', active: set.has('plan_started') },
+    { label: '分发', active: set.has('task_dispatched') },
+    { label: '执行', active: set.has('agent_progress') },
+    { label: '重规划', active: set.has('replan_triggered') },
+    { label: '完成', active: set.has('plan_completed') },
+  ]
+})
+
 function labelForEvent(type: string) {
   if (type === 'plan_started') return '启动'
   if (type === 'task_dispatched') return '分发'
@@ -57,6 +68,13 @@ function extractChips(data: Record<string, unknown>) {
         <span>{{ metric.label }}</span>
         <strong>{{ metric.value }}</strong>
       </article>
+    </div>
+
+    <div class="process-rail surface-card">
+      <div v-for="stage in processStages" :key="stage.label" :class="['process-node', { active: stage.active }]">
+        <span class="process-node__dot"></span>
+        <span>{{ stage.label }}</span>
+      </div>
     </div>
 
     <div class="timeline">
@@ -163,6 +181,38 @@ function extractChips(data: Record<string, unknown>) {
 .timeline {
   display: grid;
   gap: 14px;
+}
+
+.process-rail {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.process-node {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  border-radius: 14px;
+  background: var(--surface-strong);
+  color: var(--text-muted);
+  border: 1px solid var(--border-color);
+  font-size: 13px;
+}
+
+.process-node.active {
+  color: var(--accent-strong);
+  background: rgba(var(--accent-rgb), 0.12);
+  border-color: rgba(var(--accent-rgb), 0.26);
+}
+
+.process-node__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: currentColor;
 }
 
 .event-card {
@@ -281,10 +331,18 @@ function extractChips(data: Record<string, unknown>) {
   .metrics-row {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .process-rail {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 560px) {
   .metrics-row {
+    grid-template-columns: 1fr;
+  }
+
+  .process-rail {
     grid-template-columns: 1fr;
   }
 
