@@ -1,0 +1,161 @@
+:root {
+  --accent: #4f8cff;
+  --accent-rgb: 79, 140, 255;
+  --accent-soft: #dbe8ff;
+  --accent-muted: #edf3ff;
+  --accent-strong: #346fda;
+  --accent-contrast: #f7fbff;
+
+  --bg-base: #08111f;
+  --bg-elevated: rgba(10, 20, 36, 0.82);
+  --bg-overlay: rgba(255, 255, 255, 0.04);
+  --surface: rgba(8, 18, 34, 0.88);
+  --surface-muted: rgba(16, 28, 46, 0.82);
+  --surface-strong: rgba(4, 12, 22, 0.94);
+  --border-color: rgba(138, 179, 255, 0.16);
+  --shadow-color: 5, 12, 24;
+
+  --text-primary: #f4f8ff;
+  --text-secondary: #c3d3e8;
+  --text-muted: #8fa4bf;
+  --text-faint: #6f8198;
+
+  --success: #31c48d;
+  --success-rgb: 49, 196, 141;
+  --warning: #ffb454;
+  --warning-rgb: 255, 180, 84;
+  --danger: #ff6b8b;
+  --danger-rgb: 255, 107, 139;
+
+  color: var(--text-primary);
+  background: var(--bg-base);
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+html[data-theme='light'] {
+  --bg-base: #eef4fb;
+  --bg-elevated: rgba(255, 255, 255, 0.86);
+  --bg-overlay: rgba(17, 34, 68, 0.04);
+  --surface: rgba(255, 255, 255, 0.88);
+  --surface-muted: rgba(244, 248, 252, 0.98);
+  --surface-strong: rgba(255, 255, 255, 0.98);
+  --border-color: rgba(75, 104, 160, 0.16);
+  --shadow-color: 38, 58, 94;
+
+  --text-primary: #122033;
+  --text-secondary: #3d5371;
+  --text-muted: #647895;
+  --text-faint: #8292aa;
+
+  color: var(--text-primary);
+  background: var(--bg-base);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background:
+    radial-gradient(circle at top left, rgba(var(--accent-rgb), 0.18), transparent 24%),
+    radial-gradient(circle at top right, rgba(var(--accent-rgb), 0.12), transparent 20%),
+    linear-gradient(180deg, var(--bg-base), color-mix(in srgb, var(--bg-base) 86%, black));
+  color: var(--text-primary);
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    linear-gradient(115deg, rgba(var(--accent-rgb), 0.08), transparent 38%),
+    radial-gradient(circle at 20% 20%, rgba(var(--accent-rgb), 0.08), transparent 30%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+a {
+  color: inherit;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+input,
+select,
+textarea {
+  outline: none;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: rgba(var(--accent-rgb), 0.45);
+  box-shadow: 0 0 0 4px rgba(var(--accent-rgb), 0.12);
+}
+
+pre,
+code {
+  font-family: 'JetBrains Mono', 'SFMono-Regular', Consolas, monospace;
+}
+
+.glass-panel {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+  border-radius: 24px;
+  padding: 24px;
+  backdrop-filter: blur(18px);
+  box-shadow:
+    0 20px 48px rgba(var(--shadow-color), 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+.surface-card {
+  background: var(--surface-muted);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: 18px;
+  box-shadow: 0 16px 38px rgba(var(--shadow-color), 0.1);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(var(--accent-rgb), 0.22);
+  border-radius: 999px;
+}
+
+::selection {
+  background: rgba(var(--accent-rgb), 0.2);
+}
+

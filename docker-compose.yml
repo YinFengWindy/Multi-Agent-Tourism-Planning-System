@@ -1,0 +1,123 @@
+version: "3.9"
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    working_dir: /app
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0 --port 5173"
+    environment:
+      VITE_API_BASE_URL: http://localhost:${API_PORT:-8000}
+    ports:
+      - "${FRONTEND_PORT:-5173}:5173"
+    volumes:
+      - ./frontend:/app
+    depends_on:
+      - api-gateway
+    networks:
+      - tourism-net
+
+  api-gateway:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    working_dir: /app
+    command: uvicorn apps.api_gateway.main:app --host 0.0.0.0 --port 8000
+    env_file:
+      - .env.example
+    ports:
+      - "${API_PORT:-8000}:8000"
+    volumes:
+      - ./backend:/app
+    depends_on:
+      - planner-service
+      - redis
+      - mongodb
+    networks:
+      - tourism-net
+
+  planner-service:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    working_dir: /app
+    command: uvicorn apps.planner_service.main:app --host 0.0.0.0 --port 8001
+    env_file:
+      - .env.example
+    ports:
+      - "${PLANNER_PORT:-8001}:8001"
+    volumes:
+      - ./backend:/app
+    depends_on:
+      - redis
+      - mongodb
+      - mcp-gateway
+    networks:
+      - tourism-net
+
+  agent-workers:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    working_dir: /app
+    command: uvicorn apps.agent_workers.main:app --host 0.0.0.0 --port 8003
+    env_file:
+      - .env.example
+    ports:
+      - "${AGENT_WORKERS_PORT:-8003}:8003"
+    volumes:
+      - ./backend:/app
+    depends_on:
+      - planner-service
+      - redis
+      - mongodb
+      - mcp-gateway
+    networks:
+      - tourism-net
+
+  mcp-gateway:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    working_dir: /app
+    command: uvicorn apps.mcp_gateway.main:app --host 0.0.0.0 --port 8002
+    env_file:
+      - .env.example
+    ports:
+      - "${MCP_GATEWAY_PORT:-8002}:8002"
+    volumes:
+      - ./backend:/app
+    depends_on:
+      - redis
+    networks:
+      - tourism-net
+
+  redis:
+    image: redis/redis-stack:7.2.0-v18
+    ports:
+      - "6379:6379"
+      - "8010:8001"
+    volumes:
+      - redis-data:/data
+    networks:
+      - tourism-net
+
+  mongodb:
+    image: mongo:7
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: tourism_planner
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - tourism-net
+
+volumes:
+  redis-data:
+  mongo-data:
+
+networks:
+  tourism-net:
+    driver: bridge
