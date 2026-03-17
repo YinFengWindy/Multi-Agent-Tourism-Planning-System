@@ -2,7 +2,24 @@ import asyncio
 from datetime import datetime, timezone
 from uuid import uuid4
 
-from app.models import PlanEnvelope, PlanEvent, PlanRequest, PlanResult
+from app.models import PlanEnvelope, PlanEvent, PlanRequest, PlanResult, PlanSummary
+
+
+def build_plan_summary(envelope: PlanEnvelope) -> PlanSummary:
+    return PlanSummary(
+        plan_id=envelope.plan_id,
+        status=envelope.status,
+        version=envelope.version,
+        origin_city=envelope.request.origin_city,
+        destination_cities=envelope.request.destination_cities,
+        travelers=envelope.request.travelers,
+        budget=envelope.request.budget,
+        summary=envelope.result.summary if envelope.result else envelope.error,
+        warning_count=len(envelope.result.warnings) if envelope.result else 0,
+        day_count=len(envelope.result.days) if envelope.result else 0,
+        created_at=envelope.created_at,
+        updated_at=envelope.updated_at,
+    )
 
 
 class PlanStore:
@@ -20,6 +37,16 @@ class PlanStore:
     async def get(self, plan_id: str) -> PlanEnvelope | None:
         async with self._lock:
             return self._plans.get(plan_id)
+
+    async def restore_plan(self, envelope: PlanEnvelope) -> PlanEnvelope:
+        async with self._lock:
+            self._plans[envelope.plan_id] = envelope
+            return envelope
+
+    async def list_summaries(self, limit: int = 8) -> list[PlanSummary]:
+        async with self._lock:
+            plans = sorted(self._plans.values(), key=lambda item: item.updated_at, reverse=True)
+            return [build_plan_summary(envelope) for envelope in plans[:limit]]
 
     async def append_event(self, plan_id: str, event: PlanEvent) -> None:
         async with self._lock:
@@ -52,4 +79,3 @@ class PlanStore:
             envelope.version += 1
             envelope.updated_at = datetime.now(timezone.utc)
             return envelope
-

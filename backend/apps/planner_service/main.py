@@ -6,7 +6,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.responses import StreamingResponse
 
 from app.config import get_settings
-from app.models import PlanEvent, PlanRequest, ReplanRequest
+from app.models import PlanEvent, PlanRequest, PlanSummary, ReplanRequest
 from app.plan_store import PlanStore
 from app.planning_engine import PlanningEngine
 from app.service_clients import HttpAgentExecutor
@@ -16,6 +16,28 @@ from app.snapshot_store import create_snapshot_store
 settings = get_settings()
 store = PlanStore()
 app = FastAPI(title=f"{settings.api_title} - Planner Service", version="0.1.0")
+
+
+async def _restore_plan_from_snapshot(plan_id: str):
+    envelope = await store.get(plan_id)
+    if envelope:
+        return envelope
+
+    snapshot = await app.state.snapshot_store.get_plan(plan_id)
+    if not snapshot:
+        return None
+
+    await store.restore_plan(snapshot)
+    return snapshot
+
+
+def _merge_recent_plans(active: list[PlanSummary], snapshots: list[PlanSummary], limit: int) -> list[PlanSummary]:
+    merged: dict[str, PlanSummary] = {}
+    for item in [*active, *snapshots]:
+        existing = merged.get(item.plan_id)
+        if not existing or item.updated_at > existing.updated_at:
+            merged[item.plan_id] = item
+    return sorted(merged.values(), key=lambda item: item.updated_at, reverse=True)[:limit]
 
 
 def _merge_replan_request(plan_request: PlanRequest, payload: ReplanRequest) -> PlanRequest:
@@ -63,6 +85,15 @@ async def health() -> dict[str, str]:
     return {"status": "ok", "service": "planner-service"}
 
 
+@app.get("/internal/plans")
+async def list_recent_plans(limit: int = 8) -> dict[str, Any]:
+    bounded_limit = min(max(limit, 1), 20)
+    active = await store.list_summaries(bounded_limit)
+    snapshots = await app.state.snapshot_store.list_plan_summaries(bounded_limit)
+    merged = _merge_recent_plans(active, snapshots, bounded_limit)
+    return {"items": [item.model_dump(mode="json") for item in merged]}
+
+
 @app.post("/internal/plans")
 async def create_plan(payload: PlanRequest) -> dict[str, Any]:
     envelope = await store.create_plan(payload)
@@ -78,7 +109,7 @@ async def create_plan(payload: PlanRequest) -> dict[str, Any]:
 
 @app.get("/internal/plans/{plan_id}")
 async def get_plan(plan_id: str) -> dict[str, Any]:
-    envelope = await store.get(plan_id)
+    envelope = await _restore_plan_from_snapshot(plan_id)
     if not envelope:
         raise HTTPException(status_code=404, detail="plan not found")
     return envelope.model_dump(mode="json")
@@ -86,7 +117,7 @@ async def get_plan(plan_id: str) -> dict[str, Any]:
 
 @app.post("/internal/plans/{plan_id}/replan")
 async def replan(plan_id: str, payload: ReplanRequest) -> dict[str, Any]:
-    envelope = await store.get(plan_id)
+    envelope = await _restore_plan_from_snapshot(plan_id)
     if not envelope:
         raise HTTPException(status_code=404, detail="plan not found")
     updated_request = _merge_replan_request(envelope.request, payload)
@@ -106,7 +137,7 @@ async def stream_plan(plan_id: str) -> StreamingResponse:
     async def event_generator():
         position = 0
         while True:
-            envelope = await store.get(plan_id)
+            envelope = await _restore_plan_from_snapshot(plan_id)
             if not envelope:
                 yield "data: {\"type\":\"plan_failed\",\"message\":\"plan not found\"}\n\n"
                 return

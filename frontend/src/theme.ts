@@ -70,12 +70,12 @@ function getContrastColor(hex: string) {
 
 export function getStoredTheme() {
   if (typeof window === 'undefined') {
-    return { mode: 'dark' as ThemeMode, accent: '#4f8cff' }
+    return { mode: 'light' as ThemeMode, accent: '#4f8cff' }
   }
 
   const storedMode = window.localStorage.getItem(STORAGE_KEYS.mode)
   const storedAccent = window.localStorage.getItem(STORAGE_KEYS.accent)
-  const mode: ThemeMode = storedMode === 'light' ? 'light' : 'dark'
+  const mode: ThemeMode = storedMode === 'dark' ? 'dark' : 'light'
   return {
     mode,
     accent: normalizeHexColor(storedAccent ?? themePresets[0].accent),
@@ -104,4 +104,3 @@ export function applyTheme(mode: ThemeMode, accent: string) {
 export function normalizeThemeColor(value: string) {
   return normalizeHexColor(value)
 }
-

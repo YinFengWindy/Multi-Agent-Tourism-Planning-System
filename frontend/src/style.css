@@ -1,54 +1,66 @@
 :root {
-  --accent: #4f8cff;
-  --accent-rgb: 79, 140, 255;
-  --accent-soft: #dbe8ff;
-  --accent-muted: #edf3ff;
-  --accent-strong: #346fda;
-  --accent-contrast: #f7fbff;
+  --accent: #28a9e1;
+  --accent-rgb: 40, 169, 225;
+  --accent-soft: #e7f7ff;
+  --accent-muted: #f2fbff;
+  --accent-strong: #1288be;
+  --accent-contrast: #ffffff;
 
-  --bg-base: #08111f;
-  --bg-elevated: rgba(10, 20, 36, 0.82);
-  --bg-overlay: rgba(255, 255, 255, 0.04);
-  --surface: rgba(8, 18, 34, 0.88);
-  --surface-muted: rgba(16, 28, 46, 0.82);
-  --surface-strong: rgba(4, 12, 22, 0.94);
-  --border-color: rgba(138, 179, 255, 0.16);
-  --shadow-color: 5, 12, 24;
+  --bg-base: #f7f8fb;
+  --bg-elevated: rgba(255, 255, 255, 0.9);
+  --bg-overlay: rgba(255, 255, 255, 0.72);
+  --surface: rgba(255, 255, 255, 0.96);
+  --surface-muted: rgba(255, 255, 255, 0.98);
+  --surface-strong: #ffffff;
+  --border-color: rgba(18, 38, 63, 0.08);
+  --shadow-color: 44, 52, 74;
 
-  --text-primary: #f4f8ff;
-  --text-secondary: #c3d3e8;
-  --text-muted: #8fa4bf;
-  --text-faint: #6f8198;
+  --text-primary: #181d28;
+  --text-secondary: #5f697b;
+  --text-muted: #8790a0;
+  --text-faint: #9ea6b4;
 
-  --success: #31c48d;
-  --success-rgb: 49, 196, 141;
-  --warning: #ffb454;
-  --warning-rgb: 255, 180, 84;
-  --danger: #ff6b8b;
-  --danger-rgb: 255, 107, 139;
+  --success: #2bb673;
+  --success-rgb: 43, 182, 115;
+  --warning: #f1a02b;
+  --warning-rgb: 241, 160, 43;
+  --danger: #ef5b7a;
+  --danger-rgb: 239, 91, 122;
+
+  --sidebar-bg: rgba(255, 255, 255, 0.82);
+  --sidebar-border: rgba(18, 38, 63, 0.06);
+  --sidebar-shadow: 44, 52, 74;
+  --sidebar-text: #161b24;
+  --sidebar-muted: #7f8797;
+  --sidebar-active-bg: rgba(var(--accent-rgb), 0.08);
+  --sidebar-active-border: rgba(var(--accent-rgb), 0.16);
+  --sidebar-icon-active-bg: rgba(var(--accent-rgb), 0.12);
 
   color: var(--text-primary);
   background: var(--bg-base);
-  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: Inter, 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-html[data-theme='light'] {
-  --bg-base: #eef4fb;
-  --bg-elevated: rgba(255, 255, 255, 0.86);
-  --bg-overlay: rgba(17, 34, 68, 0.04);
-  --surface: rgba(255, 255, 255, 0.88);
-  --surface-muted: rgba(244, 248, 252, 0.98);
-  --surface-strong: rgba(255, 255, 255, 0.98);
-  --border-color: rgba(75, 104, 160, 0.16);
-  --shadow-color: 38, 58, 94;
-
-  --text-primary: #122033;
-  --text-secondary: #3d5371;
-  --text-muted: #647895;
-  --text-faint: #8292aa;
-
-  color: var(--text-primary);
-  background: var(--bg-base);
+html[data-theme='dark'] {
+  --bg-base: #10151d;
+  --bg-elevated: rgba(19, 24, 32, 0.92);
+  --bg-overlay: rgba(255, 255, 255, 0.04);
+  --surface: rgba(22, 28, 38, 0.94);
+  --surface-muted: rgba(24, 32, 44, 0.96);
+  --surface-strong: rgba(15, 21, 30, 0.98);
+  --border-color: rgba(255, 255, 255, 0.08);
+  --shadow-color: 4, 8, 14;
+  --text-primary: #f5f7fb;
+  --text-secondary: #c0c8d6;
+  --text-muted: #8a96aa;
+  --text-faint: #667387;
+  --sidebar-bg: rgba(19, 24, 32, 0.9);
+  --sidebar-border: rgba(255, 255, 255, 0.06);
+  --sidebar-text: #f5f7fb;
+  --sidebar-muted: #8a96aa;
+  --sidebar-active-bg: rgba(var(--accent-rgb), 0.14);
+  --sidebar-active-border: rgba(var(--accent-rgb), 0.24);
+  --sidebar-icon-active-bg: rgba(var(--accent-rgb), 0.16);
 }
 
 * {
@@ -63,22 +75,16 @@ body {
   margin: 0;
   min-width: 320px;
   background:
-    radial-gradient(circle at top left, rgba(var(--accent-rgb), 0.18), transparent 24%),
-    radial-gradient(circle at top right, rgba(var(--accent-rgb), 0.12), transparent 20%),
-    linear-gradient(180deg, var(--bg-base), color-mix(in srgb, var(--bg-base) 86%, black));
+    radial-gradient(circle at top center, rgba(var(--accent-rgb), 0.1), transparent 30%),
+    linear-gradient(180deg, #fbfbfd, var(--bg-base));
   color: var(--text-primary);
   transition: background 0.25s ease, color 0.25s ease;
 }
 
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
+html[data-theme='dark'] body {
   background:
-    linear-gradient(115deg, rgba(var(--accent-rgb), 0.08), transparent 38%),
-    radial-gradient(circle at 20% 20%, rgba(var(--accent-rgb), 0.08), transparent 30%);
-  pointer-events: none;
-  z-index: -1;
+    radial-gradient(circle at top center, rgba(var(--accent-rgb), 0.12), transparent 24%),
+    linear-gradient(180deg, #0f141c, var(--bg-base));
 }
 
 a {
@@ -113,8 +119,8 @@ textarea {
 input:focus,
 select:focus,
 textarea:focus {
-  border-color: rgba(var(--accent-rgb), 0.45);
-  box-shadow: 0 0 0 4px rgba(var(--accent-rgb), 0.12);
+  border-color: rgba(var(--accent-rgb), 0.34);
+  box-shadow: 0 0 0 4px rgba(var(--accent-rgb), 0.08);
 }
 
 pre,
@@ -125,12 +131,11 @@ code {
 .glass-panel {
   background: var(--bg-elevated);
   border: 1px solid var(--border-color);
-  border-radius: 24px;
+  border-radius: 28px;
   padding: 24px;
-  backdrop-filter: blur(18px);
   box-shadow:
-    0 20px 48px rgba(var(--shadow-color), 0.18),
-    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    0 18px 44px rgba(var(--shadow-color), 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
   transition:
     transform 0.22s ease,
     box-shadow 0.22s ease,
@@ -138,12 +143,18 @@ code {
     background 0.22s ease;
 }
 
+html[data-theme='dark'] .glass-panel {
+  box-shadow:
+    0 20px 48px rgba(var(--shadow-color), 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
 .surface-card {
   background: var(--surface-muted);
   border: 1px solid var(--border-color);
-  border-radius: 20px;
+  border-radius: 24px;
   padding: 18px;
-  box-shadow: 0 16px 38px rgba(var(--shadow-color), 0.1);
+  box-shadow: 0 12px 24px rgba(var(--shadow-color), 0.05);
   transition:
     transform 0.2s ease,
     border-color 0.2s ease,
@@ -153,7 +164,7 @@ code {
 
 .glass-panel:hover,
 .surface-card:hover {
-  border-color: rgba(var(--accent-rgb), 0.24);
+  border-color: rgba(var(--accent-rgb), 0.16);
 }
 
 ::-webkit-scrollbar {
@@ -166,10 +177,10 @@ code {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(var(--accent-rgb), 0.22);
+  background: rgba(111, 124, 145, 0.25);
   border-radius: 999px;
 }
 
 ::selection {
-  background: rgba(var(--accent-rgb), 0.2);
+  background: rgba(var(--accent-rgb), 0.16);
 }

@@ -5,7 +5,8 @@ try:
 except ImportError:  # pragma: no cover
     AsyncIOMotorClient = None
 
-from app.models import PlanEnvelope
+from app.models import PlanEnvelope, PlanSummary
+from app.plan_store import build_plan_summary
 
 
 class MemorySnapshotStore:
@@ -14,6 +15,19 @@ class MemorySnapshotStore:
 
     async def save_plan(self, envelope: PlanEnvelope) -> None:
         self.snapshots[envelope.plan_id] = envelope.model_dump(mode="json")
+
+    async def get_plan(self, plan_id: str) -> PlanEnvelope | None:
+        document = self.snapshots.get(plan_id)
+        if not document:
+            return None
+        return PlanEnvelope.model_validate(document)
+
+    async def list_plan_summaries(self, limit: int = 8) -> list[PlanSummary]:
+        summaries = [
+            build_plan_summary(PlanEnvelope.model_validate(document))
+            for document in self.snapshots.values()
+        ]
+        return sorted(summaries, key=lambda item: item.updated_at, reverse=True)[:limit]
 
 
 class MongoSnapshotStore:
@@ -28,6 +42,16 @@ class MongoSnapshotStore:
             upsert=True,
         )
 
+    async def get_plan(self, plan_id: str) -> PlanEnvelope | None:
+        document = await self._collection.find_one({"plan_id": plan_id}, {"_id": 0})
+        if not document:
+            return None
+        return PlanEnvelope.model_validate(document)
+
+    async def list_plan_summaries(self, limit: int = 8) -> list[PlanSummary]:
+        documents = await self._collection.find({}, {"_id": 0}).sort("updated_at", -1).to_list(length=limit)
+        return [build_plan_summary(PlanEnvelope.model_validate(document)) for document in documents]
+
 
 async def create_snapshot_store(mongodb_uri: str, db_name: str) -> MemorySnapshotStore | MongoSnapshotStore:
     if AsyncIOMotorClient and mongodb_uri:
@@ -38,4 +62,3 @@ async def create_snapshot_store(mongodb_uri: str, db_name: str) -> MemorySnapsho
         except Exception:
             return MemorySnapshotStore()
     return MemorySnapshotStore()
-

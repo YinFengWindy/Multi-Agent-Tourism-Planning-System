@@ -121,3 +121,83 @@ class PlanEnvelope(BaseModel):
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
+
+class PlanSummary(BaseModel):
+    plan_id: str
+    status: str
+    version: int = 1
+    origin_city: str
+    destination_cities: list[str] = Field(default_factory=list)
+    travelers: int = 1
+    budget: float = 0
+    summary: str | None = None
+    warning_count: int = 0
+    day_count: int = 0
+    created_at: datetime
+    updated_at: datetime
+
+
+class ServiceHealth(BaseModel):
+    service: str
+    status: str
+    url: str | None = None
+    latency_ms: int | None = None
+    detail: str | None = None
+
+
+class SystemHealthResponse(BaseModel):
+    status: str
+    generated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    services: list[ServiceHealth] = Field(default_factory=list)
+
+
+class ChatMessage(BaseModel):
+    role: str
+    content: str
+
+
+class LlmConnectionConfig(BaseModel):
+    base_url: str
+    api_key: str
+    model: str
+    temperature: float = 0.3
+
+
+class ChatPlanningRequest(BaseModel):
+    messages: list[ChatMessage] = Field(default_factory=list)
+    llm_config: LlmConnectionConfig
+    current_plan_id: str | None = None
+    current_request: PlanRequest | None = None
+
+
+class ChatPlanningResponse(BaseModel):
+    assistant_message: str
+    action: str
+    status: str
+    plan_id: str | None = None
+    stream_url: str | None = None
+    request_preview: PlanRequest | None = None
+
+
+class PortalModeCard(BaseModel):
+    title: str
+    subtitle: str
+    badge: str
+    accent: str
+
+
+class PortalGalleryCard(BaseModel):
+    title: str
+    subtitle: str
+    badge: str
+    size: str = 'medium'
+    theme: str = 'azure'
+
+
+class PortalHomeResponse(BaseModel):
+    headline: str
+    subheadline: str
+    prompt_placeholder: str
+    hero_chips: list[str] = Field(default_factory=list)
+    mode_cards: list[PortalModeCard] = Field(default_factory=list)
+    gallery_cards: list[PortalGalleryCard] = Field(default_factory=list)

@@ -152,9 +152,9 @@ const selectedPreset = computed(() =>
 .preset,
 .secondary-button {
   border: 1px solid var(--border-color);
-  background: var(--surface-muted);
+  background: var(--surface-strong);
   color: var(--text-primary);
-  border-radius: 14px;
+  border-radius: 18px;
   cursor: pointer;
   transition: 0.2s ease;
 }
@@ -164,8 +164,8 @@ const selectedPreset = computed(() =>
 }
 
 .segment.active {
-  background: rgba(var(--accent-rgb), 0.16);
-  border-color: rgba(var(--accent-rgb), 0.34);
+  background: rgba(var(--accent-rgb), 0.08);
+  border-color: rgba(var(--accent-rgb), 0.2);
   color: var(--accent-strong);
 }
 
@@ -190,8 +190,8 @@ const selectedPreset = computed(() =>
 }
 
 .preset.active {
-  background: rgba(var(--accent-rgb), 0.14);
-  border-color: rgba(var(--accent-rgb), 0.34);
+  background: rgba(var(--accent-rgb), 0.08);
+  border-color: rgba(var(--accent-rgb), 0.2);
   color: var(--accent-strong);
 }
 
@@ -259,8 +259,8 @@ const selectedPreset = computed(() =>
 
 .surface-box {
   border: 1px solid var(--border-color);
-  background: var(--surface-muted);
-  border-radius: 18px;
+  background: var(--surface-strong);
+  border-radius: 24px;
   padding: 16px;
 }
 

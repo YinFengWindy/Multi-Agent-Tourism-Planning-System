@@ -3,11 +3,7 @@ import { computed, reactive } from 'vue'
 
 import type { PlanRequest } from '../types'
 
-const emit = defineEmits<{
-  submit: [payload: PlanRequest]
-}>()
-
-const form = reactive({
+const formDefaults = {
   originCity: '上海',
   destinations: '杭州,乌镇',
   startDate: '2026-05-01',
@@ -19,7 +15,60 @@ const form = reactive({
   transportMode: '高铁,地铁,打车',
   dailyStartAfter: '09:00',
   dailyEndBefore: '21:30',
-})
+}
+
+interface TripPreset {
+  id: string
+  label: string
+  description: string
+  form: typeof formDefaults
+}
+
+const emit = defineEmits<{
+  submit: [payload: PlanRequest]
+}>()
+
+const tripPresets: TripPreset[] = [
+  {
+    id: 'weekend',
+    label: '周末轻松游',
+    description: '2-3 天的经典周末游模板，适合快速发起。',
+    form: { ...formDefaults },
+  },
+  {
+    id: 'family',
+    label: '亲子探索',
+    description: '更舒适的作息与更宽松预算，适合家庭出行。',
+    form: {
+      ...formDefaults,
+      destinations: '杭州,上海迪士尼',
+      endDate: '2026-05-04',
+      travelers: 3,
+      budget: 6800,
+      preferences: '亲子,轻松节奏,互动体验',
+      hotelLevel: '高端型',
+      dailyStartAfter: '09:30',
+      dailyEndBefore: '20:30',
+    },
+  },
+  {
+    id: 'city',
+    label: '高效城市游',
+    description: '强调通勤效率和地标覆盖，适合高密度行程。',
+    form: {
+      ...formDefaults,
+      destinations: '北京',
+      budget: 5200,
+      preferences: '地标,博物馆,城市漫步',
+      transportMode: '地铁,步行,打车',
+      hotelLevel: '经济型',
+      dailyStartAfter: '08:30',
+      dailyEndBefore: '21:00',
+    },
+  },
+]
+
+const form = reactive({ ...formDefaults })
 
 const destinationPreview = computed(() =>
   form.destinations
@@ -58,7 +107,46 @@ const travelProfile = computed(() => [
   { label: '节奏策略', value: `${form.dailyStartAfter} - ${form.dailyEndBefore}` },
 ])
 
+const validationErrors = computed(() => {
+  const issues: string[] = []
+  if (!form.originCity.trim()) {
+    issues.push('请填写出发城市。')
+  }
+  if (!destinationPreview.value.length) {
+    issues.push('请至少填写 1 个目的地城市。')
+  }
+
+  const start = new Date(form.startDate)
+  const end = new Date(form.endDate)
+  if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) {
+    issues.push('请填写合法的开始和结束日期。')
+  } else if (end.getTime() < start.getTime()) {
+    issues.push('结束日期不能早于开始日期。')
+  }
+
+  if (Number(form.travelers) < 1) {
+    issues.push('出行人数至少为 1。')
+  }
+  if (Number(form.budget) < 500) {
+    issues.push('总预算建议不低于 500 元。')
+  }
+  if (form.dailyEndBefore <= form.dailyStartAfter) {
+    issues.push('每日结束时间需要晚于开始时间。')
+  }
+  return issues
+})
+
+const canSubmit = computed(() => !validationErrors.value.length)
+
+function applyPreset(preset: TripPreset) {
+  Object.assign(form, preset.form)
+}
+
 function handleSubmit() {
+  if (!canSubmit.value) {
+    return
+  }
+
   emit('submit', {
     origin_city: form.originCity,
     destination_cities: destinationPreview.value,
@@ -86,8 +174,25 @@ function handleSubmit() {
         <h2>旅行约束配置器</h2>
         <p>像操作专业业务工作台一样组织需求、约束与偏好，再交给 Parent Agent 编排。</p>
       </div>
-      <button class="primary-button" @click="handleSubmit">发起规划</button>
+      <button class="primary-button" :disabled="!canSubmit" type="button" @click="handleSubmit">发起规划</button>
     </div>
+
+    <section class="surface-card preset-panel">
+      <div class="section-title">快速模板</div>
+      <div class="preset-grid">
+        <button v-for="preset in tripPresets" :key="preset.id" class="preset-card" type="button" @click="applyPreset(preset)">
+          <strong>{{ preset.label }}</strong>
+          <span>{{ preset.description }}</span>
+        </button>
+      </div>
+    </section>
+
+    <section v-if="validationErrors.length" class="surface-card validation-panel">
+      <div class="section-title">提交前检查</div>
+      <ul>
+        <li v-for="issue in validationErrors" :key="issue">{{ issue }}</li>
+      </ul>
+    </section>
 
     <div class="planner-layout">
       <div class="form-sections">
@@ -234,10 +339,58 @@ function handleSubmit() {
   box-shadow: 0 14px 28px rgba(var(--accent-rgb), 0.24);
 }
 
+.primary-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+  box-shadow: none;
+}
+
+.preset-panel,
+.validation-panel {
+  display: grid;
+  gap: 14px;
+}
+
 .planner-layout {
   display: grid;
   grid-template-columns: minmax(0, 1.1fr) minmax(260px, 320px);
   gap: 18px;
+}
+
+.preset-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.preset-card {
+  border: 1px solid rgba(var(--accent-rgb), 0.18);
+  background: linear-gradient(180deg, rgba(var(--accent-rgb), 0.1), rgba(var(--accent-rgb), 0.04));
+  color: var(--text-primary);
+  border-radius: 18px;
+  padding: 14px;
+  display: grid;
+  gap: 8px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.preset-card strong {
+  font-size: 14px;
+}
+
+.preset-card span {
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.validation-panel ul {
+  margin: 0;
+  padding-left: 18px;
+  color: var(--danger);
+  display: grid;
+  gap: 8px;
 }
 
 .form-sections,
@@ -358,7 +511,8 @@ select {
 }
 
 @media (max-width: 1120px) {
-  .planner-layout {
+  .planner-layout,
+  .preset-grid {
     grid-template-columns: 1fr;
   }
 }
